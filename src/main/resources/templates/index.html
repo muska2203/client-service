@@ -1,0 +1,12 @@
+<head>
+    <title>
+        Стартовая страница
+    </title>
+</head>
+<body>
+<h1 th:text="|Дратути, ${user.getName()}|"></h1>
+<p>Это стартовая страница приложения client-service</p>
+<form th:action="@{/logout}" method="post">
+    <input type="submit" value="Выйти!"/>
+</form>
+</body>
