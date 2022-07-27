@@ -1,0 +1,12 @@
+<head>
+    <title>
+        Список клиентов
+    </title>
+</head>
+<body>
+<h1>Список клиентов</h1>
+<p th:each="client: ${clients}" th:text="${clientStat.index} + 1 + '. ' + ${client.name} + '(' + ${client.phoneNumber} + ')'"></p>
+<form th:action="@{/hello}" method="get">
+    <input type="submit" value="На главную"/>
+</form>
+</body>

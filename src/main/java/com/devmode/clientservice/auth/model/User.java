@@ -17,13 +17,13 @@ public class User {
     @Column(nullable = false, unique = true)
     private String externalId;
 
-    @Column(nullable = false)
+    @Column
     private String name;
 
-    @Column(nullable = false)
+    @Column
     private String firstName;
 
-    @Column(nullable = false)
+    @Column
     private String lastName;
 
     @Column(nullable = false)

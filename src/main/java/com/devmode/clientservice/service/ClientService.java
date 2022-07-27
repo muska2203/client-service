@@ -16,4 +16,8 @@ public class ClientService {
     public List<Client> getAll() {
         return clientRepository.findAll();
     }
+
+    public List<Client> findAllByUserId(Integer userId) {
+        return clientRepository.findAllByUserId(userId);
+    }
 }

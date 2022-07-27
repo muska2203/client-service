@@ -1,5 +1,7 @@
 package com.devmode.clientservice.config.security;
 
+import com.devmode.clientservice.auth.api.AuthorizedUser;
+import com.devmode.clientservice.auth.api.UserDto;
 import com.devmode.clientservice.auth.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
@@ -19,17 +21,17 @@ public class CustomOidcUserService extends OidcUserService {
         OidcUser oidcUser = super.loadUser(userRequest);
 
         try {
-            return processOidcUser(userRequest, oidcUser);
+            return processOidcUser(oidcUser);
         } catch (Exception ex) {
             throw new InternalAuthenticationServiceException(ex.getMessage(), ex.getCause());
         }
     }
 
-    private OidcUser processOidcUser(OidcUserRequest userRequest, OidcUser oidcUser) {
+    private OidcUser processOidcUser(OidcUser oidcUser) {
         GoogleUserInfo googleUserInfo = new GoogleUserInfo(oidcUser.getAttributes());
 
-        userService.save(googleUserInfo);
+        UserDto user = userService.save(googleUserInfo);
 
-        return oidcUser;
+        return new AuthorizedUser(oidcUser, user.getId());
     }
 }

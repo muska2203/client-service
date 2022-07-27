@@ -4,9 +4,9 @@
     </title>
 </head>
 <body>
-<h1 th:text="|Дратути, ${user.getName()}|"></h1>
-<p>Это стартовая страница приложения client-service</p>
-<form th:action="@{/logout}" method="post">
-    <input type="submit" value="Выйти!"/>
+<h1>Приветствуем вас в приложении Мои Услуги</h1>
+<p>Для работы в приложении нужно авторизоваться</p>
+<form th:action="@{/hello}" method="get">
+    <input type="submit" value="Войти"/>
 </form>
 </body>

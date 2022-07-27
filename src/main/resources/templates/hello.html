@@ -1,0 +1,14 @@
+<head>
+    <title>
+        Приветствие
+    </title>
+</head>
+<body>
+<h1 th:text="|Дратути, ${user.getName()}|"></h1>
+<form th:action="@{/clients}" method="get">
+    <input type="submit" value="Показать клиентов"/>
+</form>
+<form th:action="@{/logout}" method="post">
+    <input type="submit" value="Выйти!"/>
+</form>
+</body>

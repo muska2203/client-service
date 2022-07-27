@@ -22,3 +22,10 @@ create table `user` (
     `email` varchar (100) not null unique,
     primary key (`id`)
 );
+
+--changeset dkovalenko:2022-07-27
+--comment Очистка таблицы клиентов и добавление поля для связи с пользователем.
+--rollback ALTER TABLE `client` DROP COLUMN `user_id`
+DELETE FROM `client`;
+ALTER TABLE `client` ADD COLUMN `user_id` int not null REFERENCES `user`(`id`);
+
