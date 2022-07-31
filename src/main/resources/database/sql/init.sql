@@ -29,3 +29,11 @@ create table `user` (
 DELETE FROM `client`;
 ALTER TABLE `client` ADD COLUMN `user_id` int not null REFERENCES `user`(`id`);
 
+--changeset dkovalenko:2022-07-28
+--comment Убрал обязательность полей с именем в таблицу `user`
+--rollback ALTER TABLE `user` ALTER COLUMN `name` varchar(150) NOT NULL;
+--rollback ALTER TABLE `user` ALTER COLUMN `first_name` varchar(150) NOT NULL;
+--rollback ALTER TABLE `user` ALTER COLUMN `last_name` varchar(150) NOT NULL;
+ALTER TABLE `user` MODIFY `name` varchar(150) null;
+ALTER TABLE `user` MODIFY `first_name` varchar(150) null;
+ALTER TABLE `user` MODIFY `last_name` varchar(150) null;

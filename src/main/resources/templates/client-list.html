@@ -4,9 +4,28 @@
     </title>
 </head>
 <body>
-<h1>Список клиентов</h1>
-<p th:each="client: ${clients}" th:text="${clientStat.index} + 1 + '. ' + ${client.name} + '(' + ${client.phoneNumber} + ')'"></p>
-<form th:action="@{/hello}" method="get">
-    <input type="submit" value="На главную"/>
-</form>
+    <form th:action="@{/clients}" method="post" th:object="${clientCreateRequest}">
+        <h1>Новый клиент</h1>
+        <div>
+            <label for="client_name">Имя</label>
+            <input id="client_name" th:field="*{name}" placeholder="Имя">
+        </div>
+        <div>
+            <label for="client_phone">Телефон</label>
+            <input id="client_phone" th:field="*{phoneNumber}" placeholder="Телефон">
+        </div>
+        <div>
+            <input type="submit" value="Сохранить"/>
+        </div>
+    </form>
+    <h1>Список клиентов</h1>
+    <div th:each="client: ${clients}">
+        <form th:action="@{/clients/{path}(path=${client.id})}" method="post">
+            <p th:text="${clientStat.index} + 1 + '. ' + ${client.name} + '(' + ${client.phoneNumber} + ')'"></p>
+            <input type="submit" value="Удалить">
+        </form>
+    </div>
+    <form th:action="@{/hello}" method="get">
+        <input type="submit" value="На главную"/>
+    </form>
 </body>

@@ -1,8 +1,8 @@
-package com.devmode.clientservice.config.security;
+package com.devmode.clientservice.auth.service;
 
 import com.devmode.clientservice.auth.api.AuthorizedUser;
 import com.devmode.clientservice.auth.api.UserDto;
-import com.devmode.clientservice.auth.service.UserService;
+import com.devmode.clientservice.config.security.GoogleUserInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
