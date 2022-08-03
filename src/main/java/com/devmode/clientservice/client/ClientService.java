@@ -72,7 +72,8 @@ public class ClientService {
      */
     @Transactional
     public void delete(Integer clientId, Integer userId) throws EntityNotFoundException {
-        clientRepository.getByIdAndUserId(clientId, userId)
-                .ifPresentOrElse(clientRepository::delete, () -> {throw new EntityNotFoundException();});
+        Client client = clientRepository.getByIdAndUserId(clientId, userId)
+                .orElseThrow(EntityNotFoundException::new);
+        clientRepository.delete(client);
     }
 }

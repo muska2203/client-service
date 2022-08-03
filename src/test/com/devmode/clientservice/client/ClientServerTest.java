@@ -4,6 +4,7 @@ import com.devmode.clientservice.client.dao.ClientRepository;
 import com.devmode.clientservice.client.dto.ClientCreateRequest;
 import com.devmode.clientservice.client.dto.ClientPreview;
 import com.devmode.clientservice.client.model.Client;
+import com.devmode.clientservice.exception.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
@@ -13,6 +14,7 @@ import javax.validation.ConstraintViolationException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -21,6 +23,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class ClientServerTest {
@@ -44,6 +49,7 @@ public class ClientServerTest {
         secondClient.setName("name1");
         secondClient.setPhoneNumber("phone2");
         secondClient.setUserId(userId);
+
         when(clientRepository.findAllByUserId(eq(userId))).thenReturn(Stream.of(client, secondClient));
         List<ClientPreview> result = clientService.findAllByUserId(userId);
         assertThat(result).hasSize(2);
@@ -82,6 +88,7 @@ public class ClientServerTest {
         ClientCreateRequest createRequest = new ClientCreateRequest();
         createRequest.setName("name");
         createRequest.setPhoneNumber("+13241321");
+
         Integer clientId = clientService.create(createRequest, userId);
         assertThat(clientId).isEqualTo(clientNewId);
         Client client = clientCaptor.getValue();
@@ -91,6 +98,29 @@ public class ClientServerTest {
         assertThat(client.getPhoneNumber()).isEqualTo(createRequest.getPhoneNumber());
         assertThat(client.getUserId()).isEqualTo(userId);
 
+    }
+
+    @Test
+    public void testDelete_ValidDelete_IfClientHasBeenFoundForSpecifiedUser() {
+        int userId = 1;
+        int clientId = 2;
+        Client client = new Client();
+        client.setId(clientId);
+        client.setUserId(userId);
+        when(clientRepository.getByIdAndUserId(clientId, userId)).thenReturn(Optional.of(client));
+
+        clientService.delete(clientId, userId);
+        verify(clientRepository, times(1)).delete(eq(client));
+    }
+
+    @Test
+    public void testDelete_ThrowsException_IfClientHasNotBeenFoundForSpecificUser() {
+        int userId = 1;
+        int clientId = 2;
+        when(clientRepository.getByIdAndUserId(clientId, userId)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> clientService.delete(clientId, userId));
+        verify(clientRepository, never()).delete(any());
     }
 
     private static boolean equalClients(Client client, ClientPreview clientPreview) {
