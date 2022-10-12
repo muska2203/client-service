@@ -1,2 +1,2 @@
 # client-service
-Servise to work with your clients
+Service to work with your clients
