@@ -4,6 +4,7 @@
 
 * [React](https://ru.reactjs.org/)
 * [Typescript](https://www.typescriptlang.org/docs/handbook/intro.html)
+* [Material UI](https://mui.com/material-ui/getting-started/overview/)
 
 ## Разработка
 
