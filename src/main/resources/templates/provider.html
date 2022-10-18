@@ -1,0 +1,12 @@
+<head th:include="fragments/head :: head ('Страница поставщика услуг')">
+</head>
+<body>
+    <h3 th:text="${providerInfo.name}" class="text-center"></h3>
+    <div th:each="link: ${providerInfo.links}">
+        <a th:href="${link.link}">
+            <button th:text="${link.type}" class="btn btn-light btn-lg btn-block">
+
+            </button>
+        </a>
+    </div>
+</body>

@@ -3,4 +3,8 @@ databaseChangeLog:
   # В рамках разработки небольшого приложения можно оставить один файл,
   # продолжая и далее наполнять его
   - include:
-      file: database/sql/init.sql
+      file:
+        database/sql/init.sql
+  - include:
+      file:
+        database/sql/2022-10/init-providers.sql
