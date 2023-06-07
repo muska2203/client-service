@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
-import { appRoutes } from './routes';
+import { appRoutes } from 'services/routing/routes';
 import { AppBar } from 'shared/components/surfaces/AppBar';
 
 export const AppRouter = () => {
