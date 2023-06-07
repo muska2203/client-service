@@ -12,7 +12,11 @@
 
 ### `npm start`
 
-Приложение будет запущено на [http://localhost:3000](http://localhost:3000) 
+Приложение будет запущено на [http://localhost:3000](http://localhost:3000)
+
+---
+
+Для форматирования используется Prettier (ПКМ -> `Reformat with Prettier`)
 
 ## Сборка приложения
 
