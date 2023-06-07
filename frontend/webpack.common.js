@@ -13,7 +13,11 @@ module.exports = {
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
     alias: {
-      '~common': path.resolve(process.cwd(), 'src/common'),
+      'example': path.resolve(process.cwd(), 'src/example'),
+      'home': path.resolve(process.cwd(), 'src/home'),
+      'order': path.resolve(process.cwd(), 'src/order'),
+      'services': path.resolve(process.cwd(), 'src/services'),
+      'shared': path.resolve(process.cwd(), 'src/shared'),
     },
   },
   module: {

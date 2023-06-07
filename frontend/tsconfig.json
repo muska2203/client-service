@@ -14,7 +14,11 @@
     "noImplicitAny": true,
     "outDir": "./build/",
     "paths": {
-      "~common/*": ["src/common/*"],
+      "example/*": ["src/example/*"],
+      "home/*": ["src/home/*"],
+      "order/*": ["src/order/*"],
+      "services/*": ["src/services/*"],
+      "shared/*": ["src/shared/*"],
     },
     "resolveJsonModule": true,
     "skipLibCheck": true,
