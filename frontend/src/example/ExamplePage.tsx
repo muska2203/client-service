@@ -7,6 +7,10 @@ import { Stepper } from 'shared/components/navigation/Stepper';
 import { Tabs } from 'shared/components/navigation/Tabs';
 import { Progress } from 'shared/components/feedback/Progress';
 import { Skeleton } from 'shared/components/feedback/Skeleton';
+import { TextField } from 'shared/components/inputs/TextField';
+import { Checkbox } from 'shared/components/inputs/Checkbox';
+import { Rating } from 'shared/components/inputs/Rating';
+import { Button } from 'shared/components/inputs/Button';
 import { Chip } from 'shared/components/dataDisplay/Chip';
 import { Divider } from 'shared/components/dataDisplay/Divider';
 import { Tooltip } from 'shared/components/dataDisplay/Tooltip';
@@ -50,7 +54,10 @@ export const ExamplePage = () => {
       <Stepper steps={steps} activeStep={1} alternativeLabel />
 
       <Tabs items={tabItems} defaultSelected={2} />
-
+      <TextField label='Outlined Text Field' variant='standard' required helperText={'Надо заполнить'} />
+      <Checkbox label={'My custom label'} />
+      <Rating name='simple-controlled' />
+      <Button type={'submit'}>Отправить</Button>
       <Progress type={'circular'} value={65} variant={'determinate'} />
       <Progress type={'circular'} />
 
