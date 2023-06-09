@@ -5,7 +5,8 @@ import { Menu } from 'shared/components/navigation/Menu';
 import { Pagination } from 'shared/components/navigation/Pagination';
 import { Stepper } from 'shared/components/navigation/Stepper';
 import { Tabs } from 'shared/components/navigation/Tabs';
-import { TextField } from 'shared/components/inputs/TextField';
+import { Progress } from 'shared/components/feedback/Progress';
+import { Skeleton } from 'shared/components/feedback/Skeleton';
 
 export const ExamplePage = () => {
   const menuOptions = [
@@ -19,7 +20,7 @@ export const ExamplePage = () => {
     { label: 'Second step', key: 'second' },
     { label: 'Third step', key: 'third' },
   ];
-  
+
   const tabItems = [
     { label: 'First tab', key: 'first', Component: <>Hello world 1</> },
     { label: 'Second tab', key: 'second', Component: <>Hello world 2</> },
@@ -45,9 +46,12 @@ export const ExamplePage = () => {
 
       <Stepper steps={steps} activeStep={1} alternativeLabel />
 
-      <Tabs items={tabItems} defaultSelected={2}/>
+      <Tabs items={tabItems} defaultSelected={2} />
 
-      <TextField label="Outlined Text Field" variant="standard" required helperText={'Надо заполнить'}/>
-      </>
+      <Progress type={'circular'} value={65} variant={'determinate'} />
+      <Progress type={'circular'} />
+
+      <Skeleton variant='rounded' width={210} height={60} />
+    </>
   );
 };
