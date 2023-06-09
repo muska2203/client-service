@@ -9,6 +9,7 @@ import { Progress } from 'shared/components/feedback/Progress';
 import { Skeleton } from 'shared/components/feedback/Skeleton';
 import { Chip } from 'shared/components/dataDisplay/Chip';
 import { Divider } from 'shared/components/dataDisplay/Divider';
+import { Tooltip } from 'shared/components/dataDisplay/Tooltip';
 
 export const ExamplePage = () => {
   const menuOptions = [
@@ -64,6 +65,10 @@ export const ExamplePage = () => {
       In lacinia eros sit amet interdum gravida. Sed libero ligula, eleifend at ullamcorper id, laoreet eu mi. Morbi
       sollicitudin, ipsum lacinia maximus imperdiet, augue tortor pellentesque purus, a vehicula velit nunc vitae neque.
       Suspendisse porta ac lectus in placerat.
+
+      <Tooltip title='This is tooltip!' placement='top-start'>
+        <Button>Hover to see tooltip</Button>
+      </Tooltip>
 
     </>
   );
