@@ -5,6 +5,7 @@
 * [React](https://ru.reactjs.org/)
 * [Typescript](https://www.typescriptlang.org/docs/handbook/intro.html)
 * [Material UI](https://mui.com/material-ui/getting-started/overview/)
+* [Styled components](https://styled-components.com/docs)
 
 ## Разработка
 
