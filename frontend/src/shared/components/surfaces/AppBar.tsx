@@ -28,7 +28,7 @@ export const AppBar = () => {
           CLIENT SERVICE
         </Typography>
         {appRoutes.map(({ name, title, route }) => (
-          <LinkContainer>
+          <LinkContainer key={name}>
             <NavBarLink key={name} to={route}>
               {title}
             </NavBarLink>

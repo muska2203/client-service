@@ -27,8 +27,8 @@ export const Menu = ({ items, title, color, disabled, variant, ...rest }: MenuPr
         {title}
       </Button>
       <MuiMenu anchorEl={anchorEl} open={open} onClose={handleClose} {...rest}>
-        {items.map(item => (
-          <MenuItem onClick={item.handler}>{item.title}</MenuItem>
+        {items.map((item, index) => (
+          <MenuItem onClick={item.handler} key={index}>{item.title}</MenuItem>
         ))}
       </MuiMenu>
     </>
