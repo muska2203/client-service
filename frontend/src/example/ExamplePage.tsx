@@ -5,6 +5,7 @@ import { Menu } from 'shared/components/navigation/Menu';
 import { Pagination } from 'shared/components/navigation/Pagination';
 import { Stepper } from 'shared/components/navigation/Stepper';
 import { Tabs } from 'shared/components/navigation/Tabs';
+import { TextField } from 'shared/components/inputs/TextField';
 
 export const ExamplePage = () => {
   const menuOptions = [
@@ -45,6 +46,8 @@ export const ExamplePage = () => {
       <Stepper steps={steps} activeStep={1} alternativeLabel />
 
       <Tabs items={tabItems} defaultSelected={2}/>
-    </>
+
+      <TextField label="Outlined Text Field" variant="standard" required helperText={'Надо заполнить'}/>
+      </>
   );
 };
