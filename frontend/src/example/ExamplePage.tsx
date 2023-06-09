@@ -7,6 +7,7 @@ import { Stepper } from 'shared/components/navigation/Stepper';
 import { Tabs } from 'shared/components/navigation/Tabs';
 import { Progress } from 'shared/components/feedback/Progress';
 import { Skeleton } from 'shared/components/feedback/Skeleton';
+import { Chip } from 'shared/components/dataDisplay/Chip';
 
 export const ExamplePage = () => {
   const menuOptions = [
@@ -52,6 +53,10 @@ export const ExamplePage = () => {
       <Progress type={'circular'} />
 
       <Skeleton variant='rounded' width={210} height={60} />
+
+      <Chip label="Clickable" variant="outlined" onClick={console.log} />
+      <Chip label="Deletable" onDelete={console.log} />
+
     </>
   );
 };
