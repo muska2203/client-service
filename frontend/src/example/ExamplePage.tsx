@@ -14,6 +14,8 @@ import { Button } from 'shared/components/inputs/Button';
 import { Chip } from 'shared/components/dataDisplay/Chip';
 import { Divider } from 'shared/components/dataDisplay/Divider';
 import { Tooltip } from 'shared/components/dataDisplay/Tooltip';
+import { Form } from 'shared/components/form/Form';
+import { SubmitButton } from 'shared/components/form/SubmitButton';
 
 export const ExamplePage = () => {
   const menuOptions = [
@@ -46,37 +48,39 @@ export const ExamplePage = () => {
         </Link>
         <Typography color='text.primary'>Example</Typography>
       </Breadcrumbs>
-
       <Menu items={menuOptions} title={'Menu example'} color={'warning'} variant={'contained'} />
-
       <Pagination count={10} />
-
       <Stepper steps={steps} activeStep={1} alternativeLabel />
-
       <Tabs items={tabItems} defaultSelected={2} />
-      <TextField label='Outlined Text Field' variant='standard' required helperText={'Надо заполнить'} />
-      <Checkbox label={'My custom label'} />
-      <Rating name='simple-controlled' />
-      <Button type={'submit'}>Отправить</Button>
+      <Form
+        onSubmit={values => alert(JSON.stringify(values))}
+        initialValues={{ myTextFieldExample: '321', myCheckboxExample: true }}
+      >
+        <TextField
+          name='myTextFieldExample'
+          label='Outlined Text Field'
+          variant='standard'
+          required
+          helperText='Надо заполнить'
+        />
+        <Checkbox name='myCheckboxExample' label={'My custom label'} />
+        <Rating name='simple-controlled' />
+        <SubmitButton>Отправить</SubmitButton>
+      </Form>
       <Progress type={'circular'} value={65} variant={'determinate'} />
       <Progress type={'circular'} />
-
       <Skeleton variant='rounded' width={210} height={60} />
-
       <Chip label='Clickable' variant='outlined' onClick={console.log} />
       <Chip label='Deletable' onDelete={console.log} />
-
       Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quis euismod dui, id malesuada neque. Etiam
       tincidunt fermentum pharetra. Aliquam erat volutpat. Nam nec magna purus.
       <Divider textAlign='left'>LEFT</Divider>
       In lacinia eros sit amet interdum gravida. Sed libero ligula, eleifend at ullamcorper id, laoreet eu mi. Morbi
       sollicitudin, ipsum lacinia maximus imperdiet, augue tortor pellentesque purus, a vehicula velit nunc vitae neque.
       Suspendisse porta ac lectus in placerat.
-
       <Tooltip title='This is tooltip!' placement='top-start'>
         <Button>Hover to see tooltip</Button>
       </Tooltip>
-
     </>
   );
 };

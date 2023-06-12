@@ -1,23 +1,26 @@
 import { TextField as MuiTextField } from '@mui/material';
 import { TextFieldProps as MuiTextFieldProps } from '@mui/material/TextField/TextField';
-import { useState } from 'react';
 
-type TextFieldProps = MuiTextFieldProps;
+import { FormItem } from 'shared/components/form/FormItem';
 
-export const TextField = ({ error, required, defaultValue = '', helperText, ...rest }: TextFieldProps) => {
-  const [value, setValue] = useState<string>(defaultValue as string);
-  const [touched, setTouched] = useState(false);
+type TextFieldProps = MuiTextFieldProps & {
+  name: string;
+};
 
-  const hasError = error || (required && touched && value.length === 0);
-
+export const TextField = ({ name, error, required, helperText, ...rest }: TextFieldProps) => {
   return (
-    <MuiTextField
-      value={value}
-      onChange={event => setValue(event.target.value)}
-      onBlur={() => setTouched(true)}
-      error={hasError}
-      helperText={hasError && helperText}
-      {...rest}
-    />
+    <FormItem name={name}>
+      {({ field: { onChange, value }, form: { setFieldTouched, touched } }) => (
+        <MuiTextField
+          name={name}
+          value={value}
+          onChange={event => onChange(event)}
+          onBlur={() => setFieldTouched(name, true)}
+          error={error || (required && touched && (value as string)?.length === 0)}
+          helperText={error || (required && touched && (value as string)?.length === 0 && helperText)}
+          {...rest}
+        />
+      )}
+    </FormItem>
   );
 };
