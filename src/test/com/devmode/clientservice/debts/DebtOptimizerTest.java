@@ -179,6 +179,47 @@ class DebtOptimizerTest {
         assertDebts(dima, Map.of(3, BigDecimal.valueOf(2.0)));
     }
 
+    @Test
+    void testWithTransitionDependencies() {
+        DebtOptimizer optimizer = new SimpleDebtOptimizer();
+
+        DebtItem artemDima = new DebtItem(0, BigDecimal.valueOf(100));
+
+        DebtItem dimaSasha = new DebtItem(2, BigDecimal.valueOf(50));
+
+        DebtItem sashaArtem = new DebtItem(1, BigDecimal.valueOf(50));
+
+        DebtItem valyaSasha = new DebtItem(2, BigDecimal.valueOf(10));
+        DebtItem valyaDima = new DebtItem(0, BigDecimal.valueOf(10));
+        DebtItem valyaArtem = new DebtItem(1, BigDecimal.valueOf(10));
+
+
+        PersonalDebt dima = new PersonalDebt(0, List.of(dimaSasha));
+        PersonalDebt artem = new PersonalDebt(1, List.of(artemDima));
+        PersonalDebt sasha = new PersonalDebt(2, List.of(sashaArtem));
+        PersonalDebt valya = new PersonalDebt(3, List.of(valyaArtem, valyaDima, valyaSasha));
+
+        List<PersonalDebt> personalDebts = optimizer.optimize(List.of(dima, artem, sasha, valya));
+
+        for (PersonalDebt p : personalDebts) {
+            if (p.getUserId() == dima.getUserId()) {
+                dima = p;
+            }
+            if (p.getUserId() == artem.getUserId()) {
+                artem = p;
+            }
+            if (p.getUserId() == sasha.getUserId()) {
+                sasha = p;
+            }
+            if (p.getUserId() == valya.getUserId()) {
+                valya = p;
+            }
+        }
+
+        assertDebts(artem, Map.of(0, BigDecimal.valueOf(40)));
+        assertDebts(valya, Map.of(0, BigDecimal.valueOf(20), 2, BigDecimal.valueOf(10)));
+    }
+
     private void assertDebts(PersonalDebt debt, Map<Integer, BigDecimal> debtValues) {
         for (Integer key : debtValues.keySet()) {
             if (debt.getDebtItemByTargetUserId(key) != null) {
