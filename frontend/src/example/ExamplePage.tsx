@@ -54,7 +54,7 @@ export const ExamplePage = () => {
       <Tabs items={tabItems} defaultSelected={2} />
       <Form
         onSubmit={values => alert(JSON.stringify(values))}
-        initialValues={{ myTextFieldExample: '321', myCheckboxExample: true }}
+        initialValues={{ myTextFieldExample: '321', myCheckboxExample: true, myRatingExample: 3 }}
       >
         <TextField
           name='myTextFieldExample'
@@ -64,7 +64,7 @@ export const ExamplePage = () => {
           helperText='Надо заполнить'
         />
         <Checkbox name='myCheckboxExample' label={'My custom label'} />
-        <Rating name='simple-controlled' />
+        <Rating name='myRatingExample' />
         <SubmitButton>Отправить</SubmitButton>
       </Form>
       <Progress type={'circular'} value={65} variant={'determinate'} />
