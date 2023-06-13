@@ -21,12 +21,20 @@ public class PersonalDebt {
     }
 
     public DebtItem getDebtItemByTargetUserId(int targetUserId) {
+        for (DebtItem debt : this.debtItems) {
+            if (debt.getTargetUserId() == targetUserId) {
+                return debt;
+            }
+        }
         return null;
     }
 
     public void removeDebtItemByTargetUserId(int targetUserId) {
-
+        for (DebtItem debt : this.debtItems) {
+            if (debt.getTargetUserId() == targetUserId) {
+                this.debtItems.remove(debt);
+            }
+        }
     }
-
 
 }
