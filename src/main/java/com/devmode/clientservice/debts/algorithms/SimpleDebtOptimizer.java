@@ -32,14 +32,15 @@ public class SimpleDebtOptimizer implements DebtOptimizer{
     @Override
     public List<PersonalDebt> optimize(Collection<PersonalDebt> personalDebtCollection) {
         List<PersonalDebt> optimizedPersonalDebts = optimizeDebts(personalDebtCollection);
-        DependencyManager dependencyManager = new DependencyManager();
+        DependencyManager dependencyManager = new DependencyManager(optimizedPersonalDebts);
         if (dependencyManager.hasTransitiveDebts(personalDebtCollection)) {
-            PersonalDebt maximumPersonalDebt = dependencyManager.findMaximumDebt(optimizedPersonalDebts);
-            PersonalDebt minimumPersonalDebt = dependencyManager.findMinimalDebt(optimizedPersonalDebts);
-            if (minimumPersonalDebt.getDebtItemByTargetUserId(maximumPersonalDebt.getUserId()) != null
-                    && maximumPersonalDebt.getDebtItemByTargetUserId(minimumPersonalDebt.getUserId()) != null) {
-                double maximumDebtValue = maximumPersonalDebt.getDebtItemByTargetUserId(minimumPersonalDebt.getUserId()).getDebtAmount().doubleValue();
-                double minimumDebtValue = minimumPersonalDebt.getDebtItemByTargetUserId(maximumPersonalDebt.getUserId()).getDebtAmount().doubleValue();
+            PersonalDebt maximumPersonalDebt = dependencyManager.findMaximumDebt();
+            PersonalDebt minimumPersonalDebt = dependencyManager.findMinimalDebt();
+            DebtItem minimumPersonalDebtItem = minimumPersonalDebt.getDebtItemByTargetUserId(maximumPersonalDebt.getUserId());
+            DebtItem maximumPersonalDebtItem = maximumPersonalDebt.getDebtItemByTargetUserId(minimumPersonalDebt.getUserId());
+            if (minimumPersonalDebtItem != null && maximumPersonalDebtItem != null) {
+                double maximumDebtValue = maximumPersonalDebtItem.getDebtAmount().doubleValue();
+                double minimumDebtValue = minimumPersonalDebtItem.getDebtAmount().doubleValue();
                 double debtValue = maximumDebtValue - minimumDebtValue;
                 for (PersonalDebt optimizedPersonalDebt : optimizedPersonalDebts) {
                     if (optimizedPersonalDebt != maximumPersonalDebt) {
@@ -62,10 +63,11 @@ public class SimpleDebtOptimizer implements DebtOptimizer{
             PersonalDebt personalDebt = (PersonalDebt) personalDebtCollection.toArray()[i];
             for (int j = 1; j < personalDebtCollection.size(); j++) {
                 PersonalDebt comparedDebt =(PersonalDebt) personalDebtCollection.toArray()[j];
-                if (comparedDebt.getDebtItemByTargetUserId(personalDebt.getUserId()) != null
-                        && personalDebt.getDebtItemByTargetUserId(comparedDebt.getUserId()) != null) {
-                    double comparedDebtValue = comparedDebt.getDebtItemByTargetUserId(personalDebt.getUserId()).getDebtAmount().doubleValue();
-                    double personalDebtValue = personalDebt.getDebtItemByTargetUserId(comparedDebt.getUserId()).getDebtAmount().doubleValue();
+                DebtItem comparedDebtItem = comparedDebt.getDebtItemByTargetUserId(personalDebt.getUserId());
+                DebtItem personalDebtItem = personalDebt.getDebtItemByTargetUserId(comparedDebt.getUserId());
+                if (comparedDebtItem != null && personalDebtItem != null) {
+                    double comparedDebtValue = comparedDebtItem.getDebtAmount().doubleValue();
+                    double personalDebtValue = personalDebtItem.getDebtAmount().doubleValue();
                     double debtValue = personalDebtValue - comparedDebtValue;
                     if (debtValue >= 0) {
                         debts.add(new DebtItem(comparedDebt.getUserId(), BigDecimal.valueOf(debtValue)));
