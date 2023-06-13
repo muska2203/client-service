@@ -1,4 +1,4 @@
-package com.devmode.clientservice.controller;
+package com.devmode.clientservice.client.controller;
 
 import com.devmode.clientservice.auth.api.AuthorizedUser;
 import com.devmode.clientservice.auth.service.UserService;

@@ -1,4 +1,4 @@
-package com.devmode.clientservice.rest.exception;
+package com.devmode.clientservice.client.rest.exception;
 
 
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.devmode.clientservice.rest;
+package com.devmode.clientservice.client.rest;
 
 import com.devmode.clientservice.auth.api.AuthorizedUser;
 import com.devmode.clientservice.client.ClientService;

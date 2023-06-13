@@ -1,4 +1,4 @@
-package com.devmode.clientservice.controller;
+package com.devmode.clientservice.provider.controller;
 
 import com.devmode.clientservice.provider.ProviderService;
 import com.devmode.clientservice.provider.api.ProviderInfo;

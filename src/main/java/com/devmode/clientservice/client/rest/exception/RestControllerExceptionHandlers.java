@@ -1,4 +1,4 @@
-package com.devmode.clientservice.rest.exception;
+package com.devmode.clientservice.client.rest.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
