@@ -1,6 +1,7 @@
 package com.devmode.clientservice.debts.algorithms;
 
 import com.devmode.clientservice.debts.orders.OrderInfo;
+import com.devmode.clientservice.debts.orders.OrderItem;
 import com.devmode.clientservice.debts.people.DebtItem;
 import com.devmode.clientservice.debts.people.PersonalDebt;
 
@@ -13,7 +14,19 @@ public class SimpleDebtOptimizer implements DebtOptimizer{
 
     @Override
     public List<PersonalDebt> countDebt(Collection<OrderInfo> orders) {
-        return null;
+        List<PersonalDebt> personalDebts = new ArrayList<>();
+        for (int i = 0; i < orders.size(); i++) {
+            OrderInfo[] infos = orders.toArray(new OrderInfo[0]);
+            OrderInfo order = infos[i];
+            int payerId = order.getPayerUserId();
+            PersonalDebt personalDebt = new PersonalDebt(payerId, new ArrayList<>());
+            List<OrderItem> items = order.getOrderItems();
+            for (OrderItem oi : items) {
+                DebtItem debtItem = new DebtItem(oi.getUserId(), oi.getCost());
+                personalDebt.getDebtItems().add(debtItem);
+            }
+        }
+        return personalDebts;
     }
 
     @Override
@@ -28,10 +41,10 @@ public class SimpleDebtOptimizer implements DebtOptimizer{
                 double maximumDebtValue = maximumPersonalDebt.getDebtItemByTargetUserId(minimumPersonalDebt.getUserId()).getDebtAmount().doubleValue();
                 double minimumDebtValue = minimumPersonalDebt.getDebtItemByTargetUserId(maximumPersonalDebt.getUserId()).getDebtAmount().doubleValue();
                 double debtValue = maximumDebtValue - minimumDebtValue;
-                for (int i = 0; i < optimizedPersonalDebts.size(); i++) {
-                    if (optimizedPersonalDebts.get(i) != maximumPersonalDebt) {
-                        optimizedPersonalDebts.get(i).removeDebtItemByTargetUserId(maximumPersonalDebt.getUserId());
-                        optimizedPersonalDebts.get(i).getDebtItems().add(new DebtItem(maximumPersonalDebt.getUserId(), BigDecimal.valueOf(debtValue)));
+                for (PersonalDebt optimizedPersonalDebt : optimizedPersonalDebts) {
+                    if (optimizedPersonalDebt != maximumPersonalDebt) {
+                        optimizedPersonalDebt.removeDebtItemByTargetUserId(maximumPersonalDebt.getUserId());
+                        optimizedPersonalDebt.getDebtItems().add(new DebtItem(maximumPersonalDebt.getUserId(), BigDecimal.valueOf(debtValue)));
                     }
                 }
                 optimizedPersonalDebts = optimizeDebts(optimizedPersonalDebts);

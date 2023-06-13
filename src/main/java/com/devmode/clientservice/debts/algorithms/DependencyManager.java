@@ -42,10 +42,7 @@ public class DependencyManager {
                 i++;
             }
         }
-        if (i == personalDebtCollection.size()) {
-            return true;
-        }
-        return false;
+        return i == personalDebtCollection.size();
     }
 
 }
