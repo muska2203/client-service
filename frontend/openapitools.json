@@ -1,0 +1,18 @@
+{
+  "$schema": "node_modules/@openapitools/openapi-generator-cli/config.schema.json",
+  "spaces": 2,
+  "generator-cli": {
+    "version": "6.4.0",
+    "generators": {
+      "artdozer-api-client": {
+        "generatorName": "typescript-fetch",
+        "inputSpec": "/*вставить сюда url*/",
+        "output": "#{cwd}/src/api",
+        "skip-validate-spec": true,
+        "additionalProperties": {
+          "typescriptThreePlus": true
+        }
+      }
+    }
+  }
+}
