@@ -1,10 +1,10 @@
 databaseChangeLog:
-  # Далее указываются "include" свойства со путями к файлом, содержащими changesets
-  # В рамках разработки небольшого приложения можно оставить один файл,
-  # продолжая и далее наполнять его
   - include:
       file:
         database/sql/init.sql
   - include:
       file:
-        database/sql/2022-10/init-providers.sql
+        database/sql/init-providers.sql
+  - include:
+      file:
+        database/sql/2023-05-31-init-food.sql
