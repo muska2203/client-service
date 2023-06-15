@@ -8,6 +8,7 @@ import com.devmode.clientservice.debts.people.PersonalDebt;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -217,6 +218,45 @@ class DebtOptimizerTest {
 
         assertDebts(artem, Map.of(0, BigDecimal.valueOf(40)));
         assertDebts(valya, Map.of(0, BigDecimal.valueOf(20), 2, BigDecimal.valueOf(10)));
+    }
+
+    @Test
+    void testDifficultVariationOfTransitionDebts() {
+        DebtOptimizer optimizer = new SimpleDebtOptimizer();
+
+        DebtItem dimaArtem = new DebtItem(2, BigDecimal.valueOf(10));
+        DebtItem dimaSasha = new DebtItem(3, BigDecimal.valueOf(10));
+        DebtItem sashaValya = new DebtItem(4, BigDecimal.valueOf(10));
+        DebtItem sashaKatya = new DebtItem(5, BigDecimal.valueOf(10));
+
+
+        PersonalDebt dima = new PersonalDebt(1, List.of(dimaArtem, dimaSasha));
+        PersonalDebt artem = new PersonalDebt(2, new ArrayList<>());
+        PersonalDebt sasha = new PersonalDebt(3, List.of(sashaValya, sashaKatya));
+        PersonalDebt valya = new PersonalDebt(4, new ArrayList<>());
+        PersonalDebt katya = new PersonalDebt(5, new ArrayList<>());
+
+        List<PersonalDebt> personalDebts = optimizer.optimize(List.of(dima, artem, sasha, valya));
+
+        for (PersonalDebt p : personalDebts) {
+            if (p.getUserId() == dima.getUserId()) {
+                dima = p;
+            }
+            if (p.getUserId() == artem.getUserId()) {
+                artem = p;
+            }
+            if (p.getUserId() == sasha.getUserId()) {
+                sasha = p;
+            }
+            if (p.getUserId() == valya.getUserId()) {
+                valya = p;
+            }
+            if (p.getUserId() == katya.getUserId()) {
+                katya = p;
+            }
+        }
+        assertDebts(dima, Map.of(4, BigDecimal.valueOf(10.0)));
+        assertDebts(sasha, Map.of(4, BigDecimal.valueOf(0.0)));
     }
 
     private void assertDebts(PersonalDebt debt, Map<Integer, BigDecimal> debtValues) {

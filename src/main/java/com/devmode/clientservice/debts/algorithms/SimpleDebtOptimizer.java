@@ -33,7 +33,7 @@ public class SimpleDebtOptimizer implements DebtOptimizer{
     public List<PersonalDebt> optimize(Collection<PersonalDebt> personalDebtCollection) {
         List<PersonalDebt> optimizedPersonalDebts = optimizeDebts(personalDebtCollection);
         DependencyManager dependencyManager = new DependencyManager(optimizedPersonalDebts);
-        if (dependencyManager.hasTransitiveDebts(personalDebtCollection)) {
+        if (dependencyManager.hasTransitiveDebts(optimizedPersonalDebts)) {
             PersonalDebt maximumPersonalDebt = dependencyManager.findMaximumDebt();
             PersonalDebt minimumPersonalDebt = dependencyManager.findMinimalDebt();
             DebtItem minimumPersonalDebtItem = minimumPersonalDebt.getDebtItemByTargetUserId(maximumPersonalDebt.getUserId());
