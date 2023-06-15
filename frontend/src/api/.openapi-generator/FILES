@@ -1,0 +1,8 @@
+.openapi-generator-ignore
+apis/ClientRestControllerApi.ts
+apis/index.ts
+index.ts
+models/ClientCreateRequest.ts
+models/ClientPreview.ts
+models/index.ts
+runtime.ts

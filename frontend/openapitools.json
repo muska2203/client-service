@@ -6,7 +6,7 @@
     "generators": {
       "artdozer-api-client": {
         "generatorName": "typescript-fetch",
-        "inputSpec": "/*вставить сюда url*/",
+        "inputSpec": "http://client.dev-mode.art/v3/api-docs",
         "output": "#{cwd}/src/api",
         "skip-validate-spec": true,
         "additionalProperties": {
