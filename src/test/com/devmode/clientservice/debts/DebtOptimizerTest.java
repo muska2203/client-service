@@ -5,6 +5,7 @@ import com.devmode.clientservice.debts.algorithms.DebtOptimizer;
 import com.devmode.clientservice.debts.algorithms.SimpleDebtOptimizer;
 import com.devmode.clientservice.debts.people.DebtItem;
 import com.devmode.clientservice.debts.people.PersonalDebt;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -265,6 +266,8 @@ class DebtOptimizerTest {
                 BigDecimal personalDebt = debt.getDebtItemByTargetUserId(key).getDebtAmount();
                 BigDecimal comparedDebt = debtValues.get(key);
                 assertEquals(comparedDebt, personalDebt);
+            } else {
+                Assertions.fail("Didn't find the personal debt with this target id: " + key);
             }
         }
     }

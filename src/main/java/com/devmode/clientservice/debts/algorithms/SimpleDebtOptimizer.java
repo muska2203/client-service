@@ -25,38 +25,17 @@ public class SimpleDebtOptimizer implements DebtOptimizer{
                 DebtItem debtItem = new DebtItem(oi.getUserId(), oi.getCost());
                 personalDebt.getDebtItems().add(debtItem);
             }
+            personalDebts.add(personalDebt);
         }
         return personalDebts;
     }
 
     @Override
     public List<PersonalDebt> optimize(Collection<PersonalDebt> personalDebtCollection) {
-        List<PersonalDebt> optimizedPersonalDebts = optimizeDebts(personalDebtCollection);
-        DependencyManager dependencyManager = new DependencyManager(optimizedPersonalDebts);
-        if (dependencyManager.hasTransitiveDebts(optimizedPersonalDebts)) {
-            PersonalDebt maximumPersonalDebt = dependencyManager.findMaximumDebt();
-            PersonalDebt minimumPersonalDebt = dependencyManager.findMinimalDebt();
-            DebtItem minimumPersonalDebtItem = minimumPersonalDebt.getDebtItemByTargetUserId(maximumPersonalDebt.getUserId());
-            DebtItem maximumPersonalDebtItem = maximumPersonalDebt.getDebtItemByTargetUserId(minimumPersonalDebt.getUserId());
-            if (minimumPersonalDebtItem != null && maximumPersonalDebtItem != null) {
-                double maximumDebtValue = maximumPersonalDebtItem.getDebtAmount().doubleValue();
-                double minimumDebtValue = minimumPersonalDebtItem.getDebtAmount().doubleValue();
-                double debtValue = maximumDebtValue - minimumDebtValue;
-                for (PersonalDebt optimizedPersonalDebt : optimizedPersonalDebts) {
-                    if (optimizedPersonalDebt != maximumPersonalDebt) {
-                        optimizedPersonalDebt.removeDebtItemByTargetUserId(maximumPersonalDebt.getUserId());
-                        optimizedPersonalDebt.getDebtItems().add(new DebtItem(maximumPersonalDebt.getUserId(), BigDecimal.valueOf(debtValue)));
-                    }
-                }
-                optimizedPersonalDebts = optimizeDebts(optimizedPersonalDebts);
-            }
-
-
-        }
-        return optimizedPersonalDebts;
+        return optimizeNonTransitionDebts(optimizeTransitionDebts(optimizeNonTransitionDebts(personalDebtCollection)));
     }
 
-    public List<PersonalDebt> optimizeDebts(Collection<PersonalDebt> personalDebtCollection) {
+    public List<PersonalDebt> optimizeNonTransitionDebts(Collection<PersonalDebt> personalDebtCollection) {
         List<PersonalDebt> personalDebts = new ArrayList<>();
         for (int i = 0; i < personalDebtCollection.size(); i++) {
             List<DebtItem> debts = new ArrayList<>();
@@ -80,6 +59,12 @@ public class SimpleDebtOptimizer implements DebtOptimizer{
             PersonalDebt newPersonalDebt = new PersonalDebt(personalDebt.getUserId(), debts);
             personalDebts.add(newPersonalDebt);
         }
+        return personalDebts;
+    }
+
+    public List<PersonalDebt> optimizeTransitionDebts(Collection<PersonalDebt> personalDebtCollection) {
+        List<PersonalDebt> personalDebts = new ArrayList<>();
+
         return personalDebts;
     }
 
