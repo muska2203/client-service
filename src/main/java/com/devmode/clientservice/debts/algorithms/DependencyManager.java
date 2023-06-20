@@ -1,50 +1,51 @@
 package com.devmode.clientservice.debts.algorithms;
 
+import com.devmode.clientservice.debts.people.DebtItem;
 import com.devmode.clientservice.debts.people.PersonalDebt;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.List;
 
 public class DependencyManager {
 
-    private Collection<PersonalDebt> personalDebtCollection;
+    private final Collection<PersonalDebt> personalDebtCollection;
 
     public DependencyManager(Collection<PersonalDebt> personalDebtCollection) {
         this.personalDebtCollection = personalDebtCollection;
     }
 
-    public PersonalDebt findMinimalDebt() {
-        Iterator<PersonalDebt> i = personalDebtCollection.iterator();
-        PersonalDebt candidate = i.next();
-
-        while (i.hasNext()) {
-            PersonalDebt next = i.next();
-            if (next.compareTo(candidate) < 0)
-                candidate = next;
+    public DebtItem findMinimalDebt(Collection<DebtItem> debtItemCollection) {
+        List<DebtItem> debtItems = new ArrayList<>(debtItemCollection);
+        DebtItem firstDebtItem = debtItems.get(0);
+        DebtItem secondDebtItem = debtItems.get(1);
+        if (firstDebtItem.compareTo(secondDebtItem) < 0) {
+            return secondDebtItem;
+        } else {
+            return firstDebtItem;
         }
-        return candidate;
     }
 
-    public PersonalDebt findMaximumDebt() {
-        Iterator<PersonalDebt> i = personalDebtCollection.iterator();
-        PersonalDebt candidate = i.next();
-
-        while (i.hasNext()) {
-            PersonalDebt next = i.next();
-            if (next.compareTo(candidate) > 0)
-                candidate = next;
+    public DebtItem findMaximumDebt(Collection<DebtItem> debtItemCollection) {
+        List<DebtItem> debtItems = new ArrayList<>(debtItemCollection);
+        DebtItem firstDebtItem = debtItems.get(0);
+        DebtItem secondDebtItem = debtItems.get(1);
+        if (firstDebtItem.compareTo(secondDebtItem) > 0) {
+            return secondDebtItem;
+        } else {
+            return firstDebtItem;
         }
-        return candidate;
     }
 
-    public boolean hasTransitiveDebts(Collection<PersonalDebt> personalDebtCollection) {
-        int i = 0;
-        for (PersonalDebt personalDebt : personalDebtCollection) {
-            if (personalDebt.getDebtItems().size() == 1 && personalDebt.getDebtItems().get(0).getDebtAmount().doubleValue() != 0.0) {
-                i++;
+    public boolean hasTransitionDebts() {
+        for (int i = 0; i < personalDebtCollection.size(); i++) {
+            for (int j = 0; j < personalDebtCollection.size(); j++) {
+                PersonalDebt personalDebt = (PersonalDebt) personalDebtCollection.toArray()[i];
+                PersonalDebt nextPersonalDebt = (PersonalDebt) personalDebtCollection.toArray()[j];
+                if (!personalDebt.equals(nextPersonalDebt))
+                    if (personalDebt.hasTransitiveDebtsWithPerson(nextPersonalDebt)) return true;
             }
         }
-        return i == personalDebtCollection.size();
+        return false;
     }
-
 }

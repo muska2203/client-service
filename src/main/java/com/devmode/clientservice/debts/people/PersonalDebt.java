@@ -1,10 +1,11 @@
 package com.devmode.clientservice.debts.people;
 
+import com.devmode.clientservice.exception.EntityNotFoundException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
+import java.util.*;
 
 @Getter
 @Setter
@@ -29,8 +30,59 @@ public class PersonalDebt implements Comparable<PersonalDebt>{
         return null;
     }
 
+    public void addDebtItem(DebtItem debtItem) {
+        if (debtItem.getTargetUserId() != this.getUserId())
+            this.getDebtItems().add(debtItem);
+    }
+
+    public boolean hasDebtWithPerson(int targetUserId) {
+        return this.getDebtItemByTargetUserId(targetUserId) != null;
+    }
+
+    public DebtItem getMaximalDebtItem() {
+        return Collections.max(this.getDebtItems());
+    }
+
     public void removeDebtItemByTargetUserId(int targetUserId) {
-        this.debtItems.removeIf(debt -> debt.getTargetUserId() == targetUserId);
+        Iterator<DebtItem> iterator = this.debtItems.iterator();
+        while (iterator.hasNext()) {
+            DebtItem debtItem = iterator.next();
+            if (debtItem.getTargetUserId() == targetUserId) {
+                iterator.remove();
+            }
+        }
+    }
+
+    public boolean hasDebtWithAnyPerson() {
+        for (DebtItem debtItem : this.debtItems) {
+            if (debtItem.isZeroDebt() || debtItem.getTargetUserId() == this.getUserId()) {
+                return false;
+            }
+        }
+        return !this.getDebtItems().isEmpty();
+    }
+
+
+    public boolean hasTransitiveDebtsWithPerson(PersonalDebt personalDebt) {
+        return this.hasDebtWithPerson(personalDebt.getUserId()) && personalDebt.hasDebtWithAnyPerson();
+    }
+
+
+    public int getTargetIdOfTransitiveDebt(PersonalDebt personalDebt) {
+        DebtItem debtItem = personalDebt.getMaximalDebtItem();
+        if (this.getUserId() != debtItem.getTargetUserId())
+            return debtItem.getTargetUserId();
+        throw new EntityNotFoundException();
+    }
+
+    public List<DebtItem> getDebtItemsWithoutItemWithTargetId(int targetUserId) {
+        List<DebtItem> debts = new ArrayList<>();
+        for (DebtItem debtItem : this.getDebtItems()) {
+            if (debtItem.getTargetUserId() != targetUserId) {
+                debts.add(debtItem);
+            }
+        }
+        return debts;
     }
 
     @Override
@@ -47,5 +99,13 @@ public class PersonalDebt implements Comparable<PersonalDebt>{
             }
         }
         return 0;
+    }
+
+    @Override
+    public boolean equals(Object personalDebt) {
+        if (personalDebt instanceof PersonalDebt debt) {
+            return debt.getUserId() == this.getUserId();
+        }
+        return false;
     }
 }

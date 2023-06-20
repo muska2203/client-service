@@ -21,16 +21,16 @@ class DebtOptimizerTest {
     void simpleOptimizeForThreePeople() {
         DebtOptimizer optimizer = new SimpleDebtOptimizer();
 
-        DebtItem dimaArtem = new DebtItem(1, BigDecimal.valueOf(20));
-        DebtItem dimaSasha = new DebtItem(2, BigDecimal.valueOf(15));
-        DebtItem artemDima = new DebtItem(0, BigDecimal.valueOf(10));
-        DebtItem artemSasha = new DebtItem(2, BigDecimal.valueOf(10));
-        DebtItem sashaDima = new DebtItem(0, BigDecimal.valueOf(10));
-        DebtItem sashaArtem = new DebtItem(1, BigDecimal.valueOf(20));
+        DebtItem dimaArtem = new DebtItem(2, BigDecimal.valueOf(20));
+        DebtItem dimaSasha = new DebtItem(3, BigDecimal.valueOf(15));
+        DebtItem artemDima = new DebtItem(1, BigDecimal.valueOf(10));
+        DebtItem artemSasha = new DebtItem(3, BigDecimal.valueOf(10));
+        DebtItem sashaDima = new DebtItem(1, BigDecimal.valueOf(10));
+        DebtItem sashaArtem = new DebtItem(2, BigDecimal.valueOf(20));
 
-        PersonalDebt dima = new PersonalDebt(0, List.of(dimaArtem, dimaSasha));
-        PersonalDebt artem = new PersonalDebt(1, List.of(artemDima, artemSasha));
-        PersonalDebt sasha = new PersonalDebt(2, List.of(sashaDima, sashaArtem));
+        PersonalDebt dima = new PersonalDebt(1, List.of(dimaArtem, dimaSasha));
+        PersonalDebt artem = new PersonalDebt(2, List.of(artemDima, artemSasha));
+        PersonalDebt sasha = new PersonalDebt(3, List.of(sashaDima, sashaArtem));
 
 
         List<PersonalDebt> personalDebts = optimizer.optimize(List.of(dima, artem, sasha));
@@ -47,9 +47,8 @@ class DebtOptimizerTest {
             }
         }
 
-        assertDebts(dima, Map.of(1, BigDecimal.valueOf(10.0), 2, BigDecimal.valueOf(5.0)));
-        assertDebts(sasha, Map.of(1, BigDecimal.valueOf(10.0)));
-
+        assertDebts(dima, Map.of(2, BigDecimal.valueOf(15.0)));
+        assertDebts(sasha, Map.of(2, BigDecimal.valueOf(5.0)));
     }
 
     @Test
@@ -82,13 +81,13 @@ class DebtOptimizerTest {
     void transitiveOptimizeThreePeople() {
         DebtOptimizer optimizer = new SimpleDebtOptimizer();
 
-        DebtItem dimaArtem = new DebtItem(1, BigDecimal.valueOf(10.0));
-        DebtItem artemSasha = new DebtItem(2, BigDecimal.valueOf(10.0));
-        DebtItem sashaDima = new DebtItem(0, BigDecimal.valueOf(10.0));
+        DebtItem dimaArtem = new DebtItem(2, BigDecimal.valueOf(10.0));
+        DebtItem artemSasha = new DebtItem(3, BigDecimal.valueOf(10.0));
+        DebtItem sashaDima = new DebtItem(1, BigDecimal.valueOf(10.0));
 
-        PersonalDebt dima = new PersonalDebt(0, List.of(dimaArtem));
-        PersonalDebt artem = new PersonalDebt(1, List.of(artemSasha));
-        PersonalDebt sasha = new PersonalDebt(2, List.of(sashaDima));
+        PersonalDebt dima = new PersonalDebt(1, List.of(dimaArtem));
+        PersonalDebt artem = new PersonalDebt(2, List.of(artemSasha));
+        PersonalDebt sasha = new PersonalDebt(3, List.of(sashaDima));
 
         List<PersonalDebt> personalDebts = optimizer.optimize(List.of(dima, artem, sasha));
 
@@ -103,10 +102,7 @@ class DebtOptimizerTest {
                 sasha = p;
             }
         }
-
-        assertDebts(dima, Map.of(1, BigDecimal.valueOf(0.0)));
-        assertDebts(artem, Map.of(2, BigDecimal.valueOf(0.0)));
-        assertDebts(sasha, Map.of(0, BigDecimal.valueOf(0.0)));
+        assertDebts(dima, Map.of(3, BigDecimal.valueOf(10.0)));
     }
 
     @Test
@@ -130,8 +126,8 @@ class DebtOptimizerTest {
             }
         }
 
-        assertDebts(dima, Map.of(1, BigDecimal.valueOf(5.0)));
-        assertDebts(sasha, Map.of(1, BigDecimal.valueOf(5.0)));
+        assertDebts(dima, Map.of(1, BigDecimal.valueOf(10.0)));
+        assertFalse(sasha.hasDebtWithPerson(1));
     }
 
     @Test
@@ -184,21 +180,21 @@ class DebtOptimizerTest {
     void testWithTransitionDependencies() {
         DebtOptimizer optimizer = new SimpleDebtOptimizer();
 
-        DebtItem artemDima = new DebtItem(0, BigDecimal.valueOf(100));
+        DebtItem artemDima = new DebtItem(1, BigDecimal.valueOf(100.0));
 
-        DebtItem dimaSasha = new DebtItem(2, BigDecimal.valueOf(50));
+        DebtItem dimaSasha = new DebtItem(3, BigDecimal.valueOf(50.0));
 
-        DebtItem sashaArtem = new DebtItem(1, BigDecimal.valueOf(50));
+        DebtItem sashaArtem = new DebtItem(2, BigDecimal.valueOf(50.0));
 
-        DebtItem valyaSasha = new DebtItem(2, BigDecimal.valueOf(10));
-        DebtItem valyaDima = new DebtItem(0, BigDecimal.valueOf(10));
-        DebtItem valyaArtem = new DebtItem(1, BigDecimal.valueOf(10));
+        DebtItem valyaSasha = new DebtItem(3, BigDecimal.valueOf(10.0));
+        DebtItem valyaDima = new DebtItem(1, BigDecimal.valueOf(10.0));
+        DebtItem valyaArtem = new DebtItem(2, BigDecimal.valueOf(10.0));
 
 
-        PersonalDebt dima = new PersonalDebt(0, List.of(dimaSasha));
-        PersonalDebt artem = new PersonalDebt(1, List.of(artemDima));
-        PersonalDebt sasha = new PersonalDebt(2, List.of(sashaArtem));
-        PersonalDebt valya = new PersonalDebt(3, List.of(valyaArtem, valyaDima, valyaSasha));
+        PersonalDebt dima = new PersonalDebt(1, List.of(dimaSasha));
+        PersonalDebt artem = new PersonalDebt(2, List.of(artemDima));
+        PersonalDebt sasha = new PersonalDebt(3, List.of(sashaArtem));
+        PersonalDebt valya = new PersonalDebt(4, List.of(valyaArtem, valyaDima, valyaSasha));
 
         List<PersonalDebt> personalDebts = optimizer.optimize(List.of(dima, artem, sasha, valya));
 
@@ -217,8 +213,8 @@ class DebtOptimizerTest {
             }
         }
 
-        assertDebts(artem, Map.of(0, BigDecimal.valueOf(40)));
-        assertDebts(valya, Map.of(0, BigDecimal.valueOf(20), 2, BigDecimal.valueOf(10)));
+        assertDebts(artem, Map.of(1, BigDecimal.valueOf(40.0)));
+        assertDebts(valya, Map.of(1, BigDecimal.valueOf(20.0), 3, BigDecimal.valueOf(10.0)));
     }
 
     @Test
@@ -235,7 +231,6 @@ class DebtOptimizerTest {
         PersonalDebt artem = new PersonalDebt(2, new ArrayList<>());
         PersonalDebt sasha = new PersonalDebt(3, List.of(sashaValya, sashaKatya));
         PersonalDebt valya = new PersonalDebt(4, new ArrayList<>());
-        PersonalDebt katya = new PersonalDebt(5, new ArrayList<>());
 
         List<PersonalDebt> personalDebts = optimizer.optimize(List.of(dima, artem, sasha, valya));
 
@@ -243,23 +238,12 @@ class DebtOptimizerTest {
             if (p.getUserId() == dima.getUserId()) {
                 dima = p;
             }
-            if (p.getUserId() == artem.getUserId()) {
-                artem = p;
-            }
             if (p.getUserId() == sasha.getUserId()) {
                 sasha = p;
             }
-            if (p.getUserId() == valya.getUserId()) {
-                valya = p;
-            }
-            if (p.getUserId() == katya.getUserId()) {
-                katya = p;
-            }
         }
         assertDebts(dima, Map.of(4, BigDecimal.valueOf(10.0)));
-        assertDebts(sasha, Map.of(4, BigDecimal.valueOf(0.0)));
     }
-
     private void assertDebts(PersonalDebt debt, Map<Integer, BigDecimal> debtValues) {
         for (Integer key : debtValues.keySet()) {
             if (debt.getDebtItemByTargetUserId(key) != null) {
@@ -267,7 +251,7 @@ class DebtOptimizerTest {
                 BigDecimal comparedDebt = debtValues.get(key);
                 assertEquals(comparedDebt, personalDebt);
             } else {
-                Assertions.fail("Didn't find the personal debt with this target id: " + key);
+                Assertions.fail("Has been not found the personal debt with this target id: " + key);
             }
         }
     }
