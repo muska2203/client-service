@@ -4,7 +4,7 @@ databaseChangeLog:
         database/sql/init.sql
   - include:
       file:
-        database/sql/init-providers.sql
+        database/sql/2022-10/init-providers.sql
   - include:
       file:
         database/sql/2023-05-31-init-food.sql
