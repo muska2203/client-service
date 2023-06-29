@@ -103,7 +103,8 @@ public class PersonalDebt implements Comparable<PersonalDebt>{
 
     @Override
     public boolean equals(Object personalDebt) {
-        if (personalDebt instanceof PersonalDebt debt) {
+        if (personalDebt instanceof PersonalDebt) {
+            PersonalDebt debt = (PersonalDebt) personalDebt;
             return debt.getUserId() == this.getUserId();
         }
         return false;

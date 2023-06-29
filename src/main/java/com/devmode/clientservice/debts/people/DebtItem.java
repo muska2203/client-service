@@ -41,7 +41,8 @@ public class DebtItem implements Comparable<DebtItem> {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof DebtItem debtItem) {
+        if (o instanceof DebtItem) {
+            DebtItem debtItem = (DebtItem) o;
             return debtItem.getTargetUserId() == this.getTargetUserId() && debtItem.getDebtAmount().doubleValue() == this.getDebtAmount().doubleValue();
         }
         return false;
