@@ -8,6 +8,18 @@ module.exports = merge(common, {
   mode: 'development',
   devServer: {
     port: '3000',
+    proxy: {
+      '/api': {
+        target: {
+          host: 'client.dev-mode.art',
+          protocol: 'http:',
+          port: 8080,
+        },
+        pathRewrite: {
+          '^/api': '',
+        },
+      },
+    },
     static: {
       directory: path.join(__dirname, 'public'),
     },

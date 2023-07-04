@@ -16,8 +16,12 @@ import { Divider } from 'shared/components/dataDisplay/Divider';
 import { Tooltip } from 'shared/components/dataDisplay/Tooltip';
 import { Form } from 'shared/components/form/Form';
 import { SubmitButton } from 'shared/components/form/SubmitButton';
+import { useClientsApi } from 'example/hooks';
 
 export const ExamplePage = () => {
+  const { clients, isLoading } = useClientsApi();
+  console.log(clients, isLoading);
+
   const menuOptions = [
     { title: 'Profile', handler: () => console.log('Profile clicked!') },
     { title: 'My account', handler: () => console.log('My account clicked!') },

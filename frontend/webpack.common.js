@@ -13,6 +13,7 @@ module.exports = {
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
     alias: {
+      'api': path.resolve(process.cwd(), 'src/api'),
       'example': path.resolve(process.cwd(), 'src/example'),
       'home': path.resolve(process.cwd(), 'src/home'),
       'order': path.resolve(process.cwd(), 'src/order'),
