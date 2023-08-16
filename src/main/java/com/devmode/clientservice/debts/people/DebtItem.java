@@ -22,8 +22,8 @@ public class DebtItem implements Comparable<DebtItem> {
         return this.debtAmount.equals(BigDecimal.valueOf(0.0));
     }
 
-    public double minus(DebtItem debtItem) {
-        return debtItem.getDebtAmount().doubleValue() - this.getDebtAmount().doubleValue();
+    public BigDecimal minus(DebtItem debtItem) {
+        return debtItem.getDebtAmount().subtract(this.getDebtAmount());
     }
 
 
