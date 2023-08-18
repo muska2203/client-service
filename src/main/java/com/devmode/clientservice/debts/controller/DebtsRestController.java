@@ -2,6 +2,8 @@ package com.devmode.clientservice.debts.controller;
 
 import com.devmode.clientservice.debts.algorithms.SimpleDebtOptimizer;
 import com.devmode.clientservice.debts.dto.PersonalDebtDto;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,8 +17,12 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/debts")
 public class DebtsRestController {
 
-    private final SimpleDebtOptimizer simpleDebtOptimizer = new SimpleDebtOptimizer();
+    private final SimpleDebtOptimizer simpleDebtOptimizer;
     private final Mapper mapper = new Mapper();
+
+    public DebtsRestController(@Qualifier(value = "simpleDebtOptimizer") SimpleDebtOptimizer simpleDebtOptimizer) {
+        this.simpleDebtOptimizer = simpleDebtOptimizer;
+    }
 
     @PostMapping("/optimize")
     public ResponseEntity<List<PersonalDebtDto>>  optimizeDebts(@RequestBody List<PersonalDebtDto> personalDebtDtos) {

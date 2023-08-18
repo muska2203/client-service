@@ -5,6 +5,8 @@ import com.devmode.clientservice.debts.orders.OrderItem;
 import com.devmode.clientservice.debts.people.DebtItem;
 import com.devmode.clientservice.debts.people.PersonalDebt;
 import com.devmode.clientservice.exception.EntityNotFoundException;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -12,6 +14,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+@Component
+@Qualifier(value = "simpleDebtOptimizer")
 public class SimpleDebtOptimizer implements DebtOptimizer {
 
     @Override
@@ -35,8 +39,8 @@ public class SimpleDebtOptimizer implements DebtOptimizer {
     @Override
     public List<PersonalDebt> optimize(Collection<PersonalDebt> personalDebtCollection) {
         List<PersonalDebt> optimizedPersonalDebts = optimizeNonTransitionDebts(personalDebtCollection);
-        DependencyManager dependencyManager = new DependencyManager(optimizedPersonalDebts);
-        if (dependencyManager.hasTransitionDebts()) {
+        DependencyManager dependencyManager = new DependencyManager();
+        if (dependencyManager.hasTransitionDebts(optimizedPersonalDebts)) {
             return clearZeroDebtors(optimizeNonTransitionDebts(optimizeTransitionDebts(optimizedPersonalDebts)));
         }
         return clearZeroDebtors(optimizedPersonalDebts);
@@ -86,6 +90,7 @@ public class SimpleDebtOptimizer implements DebtOptimizer {
                 }
             }
         }
+
         if (personalDebts.isEmpty()) {
             return personalDebtList;
         }
@@ -96,84 +101,85 @@ public class SimpleDebtOptimizer implements DebtOptimizer {
     public List<PersonalDebt> optimizeTransitionDebts(Collection<PersonalDebt> personalDebtCollection) {
         List<PersonalDebt> optimizedPersonalDebts = new ArrayList<>(clearZeroDebtors(personalDebtCollection));
         List<PersonalDebt> personalDebts = new ArrayList<>();
-        DependencyManager dependencyManager = new DependencyManager(optimizedPersonalDebts);
-        if (!optimizedPersonalDebts.isEmpty()) {
-            for (int i = 0; i < optimizedPersonalDebts.size(); i++) {
-                PersonalDebt personalDebt = optimizedPersonalDebts.get(i);
-                int personalDebtId = personalDebt.getUserId();
-                for (int j = 0; j < optimizedPersonalDebts.size(); j++) {
-                    PersonalDebt nextPersonalDebt = optimizedPersonalDebts.get(j);
-                    if (!personalDebt.equals(nextPersonalDebt)) {
-                        int nextPersonalDebtId = nextPersonalDebt.getUserId();
-                        if (personalDebt.hasTransitiveDebtsWithPerson(nextPersonalDebt)) {
-                            DebtItem personalDebtItem;
-                            DebtItem nextPersonalDebtItem;
-                            double personalDebtItemValue;
-                            double nextPersonalDebtItemValue;
-                            int maxTargetUserDebtItemId;
-                            try {
-                                maxTargetUserDebtItemId = personalDebt.getTargetIdOfTransitiveDebt(nextPersonalDebt);
-                            } catch (EntityNotFoundException e) {
-                                continue;
-                            }
-                            if (maxTargetUserDebtItemId != personalDebtId) {
-                                personalDebtItem = personalDebt.getDebtItemByTargetUserId(nextPersonalDebtId);
-                                personalDebtItemValue = personalDebtItem.getDebtAmount().doubleValue();
-                                nextPersonalDebtItem = nextPersonalDebt.getDebtItemByTargetUserId(maxTargetUserDebtItemId);
-                                nextPersonalDebtItemValue = nextPersonalDebtItem.getDebtAmount().doubleValue();
-                                personalDebt
-                                        = new PersonalDebt(personalDebtId, personalDebt.getDebtItemsWithoutItemWithTargetId(nextPersonalDebtId));
-                                nextPersonalDebt
-                                        = new PersonalDebt(nextPersonalDebtId, nextPersonalDebt.getDebtItemsWithoutItemWithTargetId(personalDebtId));
-                                BigDecimal minPersonalDebtValue = dependencyManager.findMinimalDebt(List.of(personalDebtItem, nextPersonalDebtItem)).getDebtAmount();
-                                BigDecimal maxPersonalDebtValue = dependencyManager.findMaximumDebt(List.of(personalDebtItem, nextPersonalDebtItem)).getDebtAmount();
-                                BigDecimal debtValue = maxPersonalDebtValue.subtract(minPersonalDebtValue);
-                                if (personalDebtItemValue == nextPersonalDebtItemValue) {
-                                    if (!personalDebt.hasDebtWithPerson(maxTargetUserDebtItemId)) {
-                                        personalDebt.addDebtItem(new DebtItem(maxTargetUserDebtItemId, BigDecimal.valueOf(personalDebtItemValue)));
-                                    } else {
-                                        DebtItem debtItem = personalDebt.getDebtItemByTargetUserId(maxTargetUserDebtItemId);
-                                        debtItem.setDebtAmount(BigDecimal.valueOf(debtItem.getDebtAmount().doubleValue() + personalDebtItemValue));
-                                    }
-                                    nextPersonalDebt.removeDebtItemByTargetUserId(maxTargetUserDebtItemId);
-                                } else if (personalDebtItemValue < nextPersonalDebtItemValue) {
-                                    if (!personalDebt.hasDebtWithPerson(maxTargetUserDebtItemId)) {
-                                        personalDebt.addDebtItem(new DebtItem(maxTargetUserDebtItemId, minPersonalDebtValue));
-                                    } else {
-                                        DebtItem debtItem = personalDebt.getDebtItemByTargetUserId(maxTargetUserDebtItemId);
-                                        debtItem.setDebtAmount(debtItem.getDebtAmount().add(minPersonalDebtValue));
-                                    }
-                                    nextPersonalDebt.getDebtItemByTargetUserId(maxTargetUserDebtItemId).setDebtAmount(debtValue);
-                                } else {
-                                    personalDebt = new PersonalDebt(personalDebtId, new ArrayList<>(personalDebt.getDebtItems()));
-                                    if (!personalDebt.hasDebtWithPerson(maxTargetUserDebtItemId)) {
-                                        personalDebt.addDebtItem(new DebtItem(maxTargetUserDebtItemId, minPersonalDebtValue));
-                                    } else {
-                                        DebtItem debtItem = personalDebt.getDebtItemByTargetUserId(maxTargetUserDebtItemId);
-                                        debtItem.setDebtAmount(debtItem.getDebtAmount().add(minPersonalDebtValue));
-                                    }
-                                    if (personalDebt.hasDebtWithPerson(nextPersonalDebtId)) {
-                                        DebtItem ownPersonalDebtItem = personalDebt.getDebtItemByTargetUserId(nextPersonalDebtId);
-                                        ownPersonalDebtItem.setDebtAmount(debtValue);
-                                    } else {
-                                        personalDebt.addDebtItem(new DebtItem(nextPersonalDebtId, debtValue));
-                                    }
-                                    nextPersonalDebt.removeDebtItemByTargetUserId(maxTargetUserDebtItemId);
+        DependencyManager dependencyManager = new DependencyManager();
+        while (dependencyManager.hasTransitionDebts(optimizedPersonalDebts)) {
+            if (!optimizedPersonalDebts.isEmpty()) {
+                for (int i = 0; i < optimizedPersonalDebts.size(); i++) {
+                    PersonalDebt personalDebt = optimizedPersonalDebts.get(i);
+                    int personalDebtId = personalDebt.getUserId();
+                    for (int j = 0; j < optimizedPersonalDebts.size(); j++) {
+                        PersonalDebt nextPersonalDebt = optimizedPersonalDebts.get(j);
+                        if (!personalDebt.equals(nextPersonalDebt)) {
+                            int nextPersonalDebtId = nextPersonalDebt.getUserId();
+                            if (personalDebt.hasTransitiveDebtsWithPerson(nextPersonalDebt)) {
+                                DebtItem personalDebtItem;
+                                DebtItem nextPersonalDebtItem;
+                                double personalDebtItemValue;
+                                double nextPersonalDebtItemValue;
+                                int maxTargetUserDebtItemId;
+                                try {
+                                    maxTargetUserDebtItemId = personalDebt.getTargetIdOfTransitiveDebt(nextPersonalDebt);
+                                } catch (EntityNotFoundException e) {
+                                    continue;
                                 }
-                                if (!personalDebts.contains(personalDebt)) {
-                                    personalDebts.add(personalDebt);
-                                } else {
-                                    removeByUserId(personalDebts, personalDebtId);
-                                    personalDebts.add(personalDebt);
+                                if (maxTargetUserDebtItemId != personalDebtId) {
+                                    personalDebtItem = personalDebt.getDebtItemByTargetUserId(nextPersonalDebtId);
+                                    personalDebtItemValue = personalDebtItem.getDebtAmount().doubleValue();
+                                    nextPersonalDebtItem = nextPersonalDebt.getDebtItemByTargetUserId(maxTargetUserDebtItemId);
+                                    nextPersonalDebtItemValue = nextPersonalDebtItem.getDebtAmount().doubleValue();
+                                    personalDebt
+                                            = new PersonalDebt(personalDebtId, personalDebt.getDebtItemsWithoutItemWithTargetId(nextPersonalDebtId));
+                                    nextPersonalDebt
+                                            = new PersonalDebt(nextPersonalDebtId, nextPersonalDebt.getDebtItemsWithoutItemWithTargetId(personalDebtId));
+                                    BigDecimal minPersonalDebtValue = dependencyManager.findMinimalDebt(List.of(personalDebtItem, nextPersonalDebtItem)).getDebtAmount();
+                                    BigDecimal maxPersonalDebtValue = dependencyManager.findMaximumDebt(List.of(personalDebtItem, nextPersonalDebtItem)).getDebtAmount();
+                                    BigDecimal debtValue = maxPersonalDebtValue.subtract(minPersonalDebtValue);
+                                    if (personalDebtItemValue == nextPersonalDebtItemValue) {
+                                        if (!personalDebt.hasDebtWithPerson(maxTargetUserDebtItemId)) {
+                                            personalDebt.addDebtItem(new DebtItem(maxTargetUserDebtItemId, BigDecimal.valueOf(personalDebtItemValue)));
+                                        } else {
+                                            DebtItem debtItem = personalDebt.getDebtItemByTargetUserId(maxTargetUserDebtItemId);
+                                            debtItem.setDebtAmount(BigDecimal.valueOf(debtItem.getDebtAmount().doubleValue() + personalDebtItemValue));
+                                        }
+                                        nextPersonalDebt.removeDebtItemByTargetUserId(maxTargetUserDebtItemId);
+                                    } else if (personalDebtItemValue < nextPersonalDebtItemValue) {
+                                        if (!personalDebt.hasDebtWithPerson(maxTargetUserDebtItemId)) {
+                                            personalDebt.addDebtItem(new DebtItem(maxTargetUserDebtItemId, minPersonalDebtValue));
+                                        } else {
+                                            DebtItem debtItem = personalDebt.getDebtItemByTargetUserId(maxTargetUserDebtItemId);
+                                            debtItem.setDebtAmount(debtItem.getDebtAmount().add(minPersonalDebtValue));
+                                        }
+                                        nextPersonalDebt.getDebtItemByTargetUserId(maxTargetUserDebtItemId).setDebtAmount(debtValue);
+                                    } else {
+                                        personalDebt = new PersonalDebt(personalDebtId, new ArrayList<>(personalDebt.getDebtItems()));
+                                        if (!personalDebt.hasDebtWithPerson(maxTargetUserDebtItemId)) {
+                                            personalDebt.addDebtItem(new DebtItem(maxTargetUserDebtItemId, minPersonalDebtValue));
+                                        } else {
+                                            DebtItem debtItem = personalDebt.getDebtItemByTargetUserId(maxTargetUserDebtItemId);
+                                            debtItem.setDebtAmount(debtItem.getDebtAmount().add(minPersonalDebtValue));
+                                        }
+                                        if (personalDebt.hasDebtWithPerson(nextPersonalDebtId)) {
+                                            DebtItem ownPersonalDebtItem = personalDebt.getDebtItemByTargetUserId(nextPersonalDebtId);
+                                            ownPersonalDebtItem.setDebtAmount(debtValue);
+                                        } else {
+                                            personalDebt.addDebtItem(new DebtItem(nextPersonalDebtId, debtValue));
+                                        }
+                                        nextPersonalDebt.removeDebtItemByTargetUserId(maxTargetUserDebtItemId);
+                                    }
+                                    if (!personalDebts.contains(personalDebt)) {
+                                        personalDebts.add(personalDebt);
+                                    } else {
+                                        removeByUserId(personalDebts, personalDebtId);
+                                        personalDebts.add(personalDebt);
+                                    }
+                                    if (!personalDebts.contains(nextPersonalDebt)) {
+                                        personalDebts.add(nextPersonalDebt);
+                                    } else {
+                                        removeByUserId(personalDebts, nextPersonalDebtId);
+                                        personalDebts.add(nextPersonalDebt);
+                                    }
+                                    optimizedPersonalDebts = fillListByNewVariables(optimizedPersonalDebts, personalDebt, nextPersonalDebt);
                                 }
-                                if (!personalDebts.contains(nextPersonalDebt)) {
-                                    personalDebts.add(nextPersonalDebt);
-                                } else {
-                                    removeByUserId(personalDebts, nextPersonalDebtId);
-                                    personalDebts.add(nextPersonalDebt);
-                                }
-
-                                optimizedPersonalDebts = fillListByNewVariables(optimizedPersonalDebts, personalDebt, nextPersonalDebt);
                             }
                         }
                     }

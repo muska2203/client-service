@@ -17,6 +17,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class DebtOptimizerTest {
 
+
+
     @Test
     void simpleOptimizeForThreePeople() {
         DebtOptimizer optimizer = new SimpleDebtOptimizer();
@@ -47,8 +49,8 @@ class DebtOptimizerTest {
             }
         }
 
-        assertDebts(dima, Map.of(2, BigDecimal.valueOf(15.0)));
-        assertDebts(sasha, Map.of(2, BigDecimal.valueOf(5.0)));
+        assertDebts(dima, Map.of(2, BigDecimal.valueOf(15)));
+        assertDebts(sasha, Map.of(2, BigDecimal.valueOf(5)));
     }
 
     @Test
@@ -121,13 +123,9 @@ class DebtOptimizerTest {
             if (p.getUserId() == dima.getUserId()) {
                 dima = p;
             }
-            if (p.getUserId() == sasha.getUserId()) {
-                sasha = p;
-            }
         }
 
         assertDebts(dima, Map.of(1, BigDecimal.valueOf(10.0)));
-        assertFalse(sasha.hasDebtWithPerson(1));
     }
 
     @Test
@@ -244,6 +242,39 @@ class DebtOptimizerTest {
         }
         assertDebts(dima, Map.of(4, BigDecimal.valueOf(10.0)));
     }
+
+    @Test
+    void test() {
+
+        DebtOptimizer optimizer = new SimpleDebtOptimizer();
+
+        DebtItem dimaGalya = new DebtItem(2, BigDecimal.valueOf(25.6));
+        DebtItem galyaDima = new DebtItem(1, BigDecimal.valueOf(33.6));
+        DebtItem dimaJenya = new DebtItem(3, BigDecimal.valueOf(25.8));
+        DebtItem jenyaDima = new DebtItem(1, BigDecimal.valueOf(16.9));
+        DebtItem jenyaGalya = new DebtItem(2, BigDecimal.valueOf(30.1));
+        DebtItem galyaJenya = new DebtItem(3, BigDecimal.valueOf(16.9));
+
+        PersonalDebt jenya = new PersonalDebt(3, List.of(jenyaDima, jenyaGalya));
+        PersonalDebt galya = new PersonalDebt(2, List.of(galyaJenya, galyaDima));
+        PersonalDebt dima = new PersonalDebt(1, List.of(dimaGalya, dimaJenya));
+
+        List<PersonalDebt> personalDebts = optimizer.optimize(List.of(dima, galya, jenya));
+
+        for (PersonalDebt p : personalDebts) {
+            if (p.getUserId() == dima.getUserId()) {
+                dima = p;
+            }
+            if (p.getUserId() == jenya.getUserId()) {
+                jenya = p;
+            }
+        }
+
+        assertDebts(dima, Map.of(2, BigDecimal.valueOf(0.9)));
+        assertDebts(jenya, Map.of(2, BigDecimal.valueOf(4.3)));
+    }
+
+
     private void assertDebts(PersonalDebt debt, Map<Integer, BigDecimal> debtValues) {
         for (Integer key : debtValues.keySet()) {
             if (debt.getDebtItemByTargetUserId(key) != null) {

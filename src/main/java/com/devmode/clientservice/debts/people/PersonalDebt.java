@@ -43,6 +43,9 @@ public class PersonalDebt implements Comparable<PersonalDebt>{
     }
 
     public DebtItem getMaximalDebtItem() {
+        if (this.getDebtItems().size() == 1) {
+            return this.getDebtItems().get(0);
+        }
         return Collections.max(this.getDebtItems());
     }
 
