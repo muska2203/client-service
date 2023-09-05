@@ -1,15 +1,16 @@
 import { AppBar as MuiAppBar, Box, Toolbar, Typography } from '@mui/material';
 import { NavLink } from 'react-router-dom';
-import styled from 'styled-components';
+import { useAuthContext } from 'services/auth/AuthenticationProvider';
 
 import { appRoutes } from 'services/routing/routes';
 import { Button } from 'shared/components/inputs/Button';
-import { useLogin } from 'services/auth/auth';
+import styled from 'styled-components';
+import { AccountMenu } from './AccountMenu';
 
 export const AppBar = () => {
   const logoTextLink = appRoutes.find(route => route.name === 'home')?.route;
-
-  const login = useLogin(console.log, console.log);
+  const { logout, profile, login } = useAuthContext();
+  const authenticated = profile !== undefined;
 
   return (
     <MuiAppBar position='static'>
@@ -26,9 +27,13 @@ export const AppBar = () => {
             </LinkContainer>
           ))}
         </LinksBox>
-        <Button onClick={() => login()} variant='contained' color='success'>
-          Войти
-        </Button>
+
+        {!authenticated && (
+          <Button onClick={login} variant='contained' color='success'>
+            Войти
+          </Button>
+        )}
+        {authenticated && <AccountMenu profile={profile} logout={logout} />}
       </Toolbar>
     </MuiAppBar>
   );
@@ -79,4 +84,10 @@ const NavBarLink = styled(NavLink)`
   &:hover {
     background-color: rgba(0, 0, 0, 0.04);
   }
+`;
+
+const UserImage = styled.img`
+  aspect-ratio: 1 / 1;
+  width: 35px;
+  border-radius: 40px;
 `;

@@ -1,4 +1,5 @@
 import { Middleware } from 'api';
+import { ACCESS_TOKEN } from '../../constants';
 
 // https://stackoverflow.com/questions/47692658/chrome-fails-to-download-response-body-if-http-status-is-an-error-code
 export const fixChromeResponseIssue: Middleware = {
@@ -13,6 +14,28 @@ export const fixChromeResponseIssue: Middleware = {
     throw {
       ...serverException,
       statusCode: ctx.response.status,
+    };
+  },
+};
+
+export const addAuthToken: Middleware = {
+  pre: async ctx => {
+    const token = localStorage.getItem(ACCESS_TOKEN);
+
+    const headers = ctx.init.headers || [];
+
+    if (token) {
+      if (Array.isArray(headers)) {
+        headers.push(['Authorization', `Bearer ${token}`]);
+      } else {
+        //@ts-ignore
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+    }
+
+    return {
+      ...ctx,
+      init: { ...ctx.init, headers },
     };
   },
 };

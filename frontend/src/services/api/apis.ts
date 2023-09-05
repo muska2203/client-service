@@ -1,9 +1,9 @@
 import { Configuration, ClientRestControllerApi } from 'api';
 
-import { fixChromeResponseIssue } from './middlewares';
+import { addAuthToken, fixChromeResponseIssue } from './middlewares';
 
 const configuration = new Configuration({
-  middleware: [fixChromeResponseIssue],
+  middleware: [fixChromeResponseIssue, addAuthToken],
   basePath: '/api',
 });
 
