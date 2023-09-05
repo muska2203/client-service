@@ -20,7 +20,7 @@ public class DebtsRestController {
     private final SimpleDebtOptimizer simpleDebtOptimizer;
     private final Mapper mapper = new Mapper();
 
-    public DebtsRestController(@Qualifier(value = "simpleDebtOptimizer") SimpleDebtOptimizer simpleDebtOptimizer) {
+    public DebtsRestController(@Qualifier(value = "smartDebtOptimizer") SimpleDebtOptimizer simpleDebtOptimizer) {
         this.simpleDebtOptimizer = simpleDebtOptimizer;
     }
 

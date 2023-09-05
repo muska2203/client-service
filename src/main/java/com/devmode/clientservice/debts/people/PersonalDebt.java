@@ -19,6 +19,11 @@ public class PersonalDebt implements Comparable<PersonalDebt>{
 
     private List<DebtItem> debtItems;
 
+    public PersonalDebt(int userId) {
+        this.userId = userId;
+        this.debtItems = new ArrayList<>();
+    }
+
     public PersonalDebt(int userId, List<DebtItem> debtItems) {
         this.userId = userId;
         this.debtItems = debtItems;
