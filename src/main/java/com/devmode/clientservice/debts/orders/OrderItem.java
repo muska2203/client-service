@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 public interface OrderItem {
 
-    int getUserId();
+    String getUserId();
 
     BigDecimal getCost();
 

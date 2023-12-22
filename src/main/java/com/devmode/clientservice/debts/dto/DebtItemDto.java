@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class DebtItemDto {
 
-    private int targetUserId;
+    private String targetUserId;
 
     private BigDecimal debtAmount;
 

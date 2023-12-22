@@ -9,7 +9,7 @@ import java.util.List;
 @AllArgsConstructor
 public class PersonalDebtDto {
 
-    private int userId;
+    private String userId;
 
     private List<DebtItemDto> debtItems;
 

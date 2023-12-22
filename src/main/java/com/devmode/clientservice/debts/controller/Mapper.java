@@ -13,7 +13,7 @@ import java.util.List;
 public class Mapper {
 
     public PersonalDebtDto toPersonalDebtDto(PersonalDebt personalDebt) {
-        int userId = personalDebt.getUserId();
+        String userId = personalDebt.getUserId();
         List<DebtItemDto> debtItems = new ArrayList<>();
         for (DebtItem debtItem : personalDebt.getDebtItems()) {
             debtItems.add(toDebtItemDto(debtItem));
@@ -22,7 +22,7 @@ public class Mapper {
     }
 
     public PersonalDebt toPersonalDebt(PersonalDebtDto personalDebtDto) {
-        int userId = personalDebtDto.getUserId();
+        String userId = personalDebtDto.getUserId();
         List<DebtItem> debtItems = new ArrayList<>();
         for (DebtItemDto debtItemDto : personalDebtDto.getDebtItems()) {
             debtItems.add(toDebtItem(debtItemDto));
@@ -31,13 +31,13 @@ public class Mapper {
     }
 
     public DebtItemDto toDebtItemDto(DebtItem debtItem) {
-        int targetUserId = debtItem.getTargetUserId();
+        String targetUserId = debtItem.getTargetUserId();
         BigDecimal debtAmount = debtItem.getDebtAmount();
         return new DebtItemDto(targetUserId, debtAmount);
     }
 
     public DebtItem toDebtItem(DebtItemDto debtItemDto) {
-        int targetUserId = debtItemDto.getTargetUserId();
+        String targetUserId = debtItemDto.getTargetUserId();
         BigDecimal debtAmount = debtItemDto.getDebtAmount();
         return new DebtItem(targetUserId, debtAmount);
     }

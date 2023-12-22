@@ -18,7 +18,7 @@ public class SmartDebtOptimizer extends SimpleDebtOptimizer {
 
     @Override
     public List<PersonalDebt> optimize(Collection<PersonalDebt> personalDebtCollection) {
-        Map<Integer, DebtInfo> debts = new HashMap<>();
+        Map<String, DebtInfo> debts = new HashMap<>();
         for (PersonalDebt personalDebt : personalDebtCollection) {
             debts.put(personalDebt.getUserId(), new DebtInfo());
         }
@@ -30,12 +30,12 @@ public class SmartDebtOptimizer extends SimpleDebtOptimizer {
                 debts.get(debtItem.getTargetUserId()).subtractDept(debtAmount);
             }
         }
-        Map<Integer, PersonalDebt> personalDebtMap = new HashMap<>();
-        for (Map.Entry<Integer, DebtInfo> deptInfoEntry : debts.entrySet()) {
-            Integer userId = deptInfoEntry.getKey();
+        Map<String, PersonalDebt> personalDebtMap = new HashMap<>();
+        for (Map.Entry<String, DebtInfo> deptInfoEntry : debts.entrySet()) {
+            String userId = deptInfoEntry.getKey();
             DebtInfo userDept = deptInfoEntry.getValue();
             if (userDept.getDept().compareTo(BigDecimal.ZERO) > 0) {
-                for (Map.Entry<Integer, DebtInfo> target : debts.entrySet()) {
+                for (Map.Entry<String, DebtInfo> target : debts.entrySet()) {
                     DebtInfo targetDept = target.getValue();
                     if (!userId.equals(target.getKey()) && userDept.getDept().compareTo(BigDecimal.ZERO) > 0 && targetDept.getDept().compareTo(BigDecimal.ZERO) < 0) {
                         BigDecimal abs = userDept.getDept().min(targetDept.getDept().abs());
@@ -50,7 +50,7 @@ public class SmartDebtOptimizer extends SimpleDebtOptimizer {
         return new ArrayList<>(personalDebtMap.values());
     }
 
-    private static void addDept(Map<Integer, PersonalDebt> personalDebts, int userId, int targetId, BigDecimal amount) {
+    private static void addDept(Map<String, PersonalDebt> personalDebts, String userId, String targetId, BigDecimal amount) {
         PersonalDebt personalDebt = personalDebts.get(userId);
         if (personalDebt == null) {
             personalDebt = new PersonalDebt(userId);

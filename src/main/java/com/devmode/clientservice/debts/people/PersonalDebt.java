@@ -15,21 +15,21 @@ import java.util.List;
 @NoArgsConstructor
 public class PersonalDebt implements Comparable<PersonalDebt>{
 
-    private int userId;
+    private String userId;
 
     private List<DebtItem> debtItems;
 
-    public PersonalDebt(int userId) {
+    public PersonalDebt(String userId) {
         this.userId = userId;
         this.debtItems = new ArrayList<>();
     }
 
-    public PersonalDebt(int userId, List<DebtItem> debtItems) {
+    public PersonalDebt(String userId, List<DebtItem> debtItems) {
         this.userId = userId;
         this.debtItems = debtItems;
     }
 
-    public DebtItem getDebtItemByTargetUserId(int targetUserId) {
+    public DebtItem getDebtItemByTargetUserId(String targetUserId) {
         for (DebtItem debt : this.debtItems) {
             if (debt.getTargetUserId() == targetUserId) {
                 return debt;
@@ -43,7 +43,7 @@ public class PersonalDebt implements Comparable<PersonalDebt>{
             this.getDebtItems().add(debtItem);
     }
 
-    public boolean hasDebtWithPerson(int targetUserId) {
+    public boolean hasDebtWithPerson(String targetUserId) {
         return this.getDebtItemByTargetUserId(targetUserId) != null;
     }
 
@@ -54,7 +54,7 @@ public class PersonalDebt implements Comparable<PersonalDebt>{
         return Collections.max(this.getDebtItems());
     }
 
-    public void removeDebtItemByTargetUserId(int targetUserId) {
+    public void removeDebtItemByTargetUserId(String targetUserId) {
         Iterator<DebtItem> iterator = this.debtItems.iterator();
         while (iterator.hasNext()) {
             DebtItem debtItem = iterator.next();
@@ -79,14 +79,14 @@ public class PersonalDebt implements Comparable<PersonalDebt>{
     }
 
 
-    public int getTargetIdOfTransitiveDebt(PersonalDebt personalDebt) {
+    public String getTargetIdOfTransitiveDebt(PersonalDebt personalDebt) {
         DebtItem debtItem = personalDebt.getMaximalDebtItem();
         if (this.getUserId() != debtItem.getTargetUserId())
             return debtItem.getTargetUserId();
         throw new EntityNotFoundException();
     }
 
-    public List<DebtItem> getDebtItemsWithoutItemWithTargetId(int targetUserId) {
+    public List<DebtItem> getDebtItemsWithoutItemWithTargetId(String targetUserId) {
         List<DebtItem> debts = new ArrayList<>();
         for (DebtItem debtItem : this.getDebtItems()) {
             if (debtItem.getTargetUserId() != targetUserId) {

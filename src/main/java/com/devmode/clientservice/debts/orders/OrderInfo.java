@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface OrderInfo {
 
-    int getPayerUserId();
+    String getPayerUserId();
 
     List<OrderItem> getOrderItems();
 

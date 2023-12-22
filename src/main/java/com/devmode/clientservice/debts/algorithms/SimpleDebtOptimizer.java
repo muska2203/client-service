@@ -24,7 +24,7 @@ public class SimpleDebtOptimizer implements DebtOptimizer {
         for (int i = 0; i < orders.size(); i++) {
             OrderInfo[] infos = orders.toArray(new OrderInfo[0]);
             OrderInfo order = infos[i];
-            int payerId = order.getPayerUserId();
+            String payerId = order.getPayerUserId();
             PersonalDebt personalDebt = new PersonalDebt(payerId, new ArrayList<>());
             List<OrderItem> items = order.getOrderItems();
             for (OrderItem oi : items) {
@@ -56,8 +56,8 @@ public class SimpleDebtOptimizer implements DebtOptimizer {
                 PersonalDebt comparedDebt = personalDebtList.get(j);
                 comparedDebt = new PersonalDebt(comparedDebt.getUserId(), new ArrayList<>(comparedDebt.getDebtItems()));
                 if (!personalDebt.equals(comparedDebt)) {
-                    int personalDebtId = personalDebt.getUserId();
-                    int comparedDebtId = comparedDebt.getUserId();
+                    String personalDebtId = personalDebt.getUserId();
+                    String comparedDebtId = comparedDebt.getUserId();
                     if (personalDebt.hasDebtWithPerson(comparedDebtId) && comparedDebt.hasDebtWithPerson(personalDebtId)) {
                         DebtItem personalDebtItem = personalDebt.getDebtItemByTargetUserId(comparedDebtId);
                         DebtItem comparedDebtItem = comparedDebt.getDebtItemByTargetUserId(personalDebtId);
@@ -106,17 +106,17 @@ public class SimpleDebtOptimizer implements DebtOptimizer {
             if (!optimizedPersonalDebts.isEmpty()) {
                 for (int i = 0; i < optimizedPersonalDebts.size(); i++) {
                     PersonalDebt personalDebt = optimizedPersonalDebts.get(i);
-                    int personalDebtId = personalDebt.getUserId();
+                    String personalDebtId = personalDebt.getUserId();
                     for (int j = 0; j < optimizedPersonalDebts.size(); j++) {
                         PersonalDebt nextPersonalDebt = optimizedPersonalDebts.get(j);
                         if (!personalDebt.equals(nextPersonalDebt)) {
-                            int nextPersonalDebtId = nextPersonalDebt.getUserId();
+                            String nextPersonalDebtId = nextPersonalDebt.getUserId();
                             if (personalDebt.hasTransitiveDebtsWithPerson(nextPersonalDebt)) {
                                 DebtItem personalDebtItem;
                                 DebtItem nextPersonalDebtItem;
                                 double personalDebtItemValue;
                                 double nextPersonalDebtItemValue;
-                                int maxTargetUserDebtItemId;
+                                String maxTargetUserDebtItemId;
                                 try {
                                     maxTargetUserDebtItemId = personalDebt.getTargetIdOfTransitiveDebt(nextPersonalDebt);
                                 } catch (EntityNotFoundException e) {
@@ -192,7 +192,7 @@ public class SimpleDebtOptimizer implements DebtOptimizer {
         return personalDebts;
     }
 
-    private void removeByUserId(List<PersonalDebt> personalDebtList, int userId) {
+    private void removeByUserId(List<PersonalDebt> personalDebtList, String userId) {
         Iterator<PersonalDebt> iterator = personalDebtList.iterator();
         while (iterator.hasNext()) {
             PersonalDebt debt = iterator.next();

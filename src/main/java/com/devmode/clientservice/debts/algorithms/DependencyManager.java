@@ -38,7 +38,7 @@ public class DependencyManager {
             for (int j = 0; j < personalDebtCollection.size(); j++) {
                 PersonalDebt personalDebt = (PersonalDebt) personalDebtCollection.toArray()[i];
                 PersonalDebt nextPersonalDebt = (PersonalDebt) personalDebtCollection.toArray()[j];
-                int maxId;
+                String maxId;
                 try {
                     maxId = personalDebt.getTargetIdOfTransitiveDebt(nextPersonalDebt);
                 } catch (EntityNotFoundException | NoSuchElementException e) {

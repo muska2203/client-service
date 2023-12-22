@@ -9,11 +9,11 @@ import java.math.BigDecimal;
 @Setter
 public class DebtItem implements Comparable<DebtItem> {
 
-    private int targetUserId;
+    private String targetUserId;
 
     private BigDecimal debtAmount;
 
-    public DebtItem(int targetUserId, BigDecimal debtAmount) {
+    public DebtItem(String targetUserId, BigDecimal debtAmount) {
         this.targetUserId = targetUserId;
         this.debtAmount = debtAmount;
     }
